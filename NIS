@@ -1,0 +1,152 @@
+NIS服务器端配置
+1. 安装NIS服务
+# yum -y install ypserv ypbind yp-tools
+2. 配置domain name
+2.1 运行以下命令并将改命令加入到/etc/rc.local启动文件中
+# nisdomainname "skyform.lab"
+2.2 并在网络配置文件/etc/sysconfig/network中添加如下内容：
+NISDOMAIN=skyform.lab
+3. 设置NIS服务器访问权限，编辑文件/etc/ypserv.conf
+# Host                     : Domain  : Map  : Security
+127.0.0.0                  : *       : *    : none
+10.15.25.0/255.255.255.0   : *       : *    : none
+*                          : *       : *    : deny
+注：允许本机以及10.15.25.0/24任意端口访问，拒绝其他任何地址。
+4. 启动NIS相关服务
+# service rpcbind start
+# service ypserv start
+# chkconfig rpcbind on
+# chkconfig ypserv on
+4.1 检查服务启动状态
+# rpcinfo -p localhost
+   program vers proto   port  service
+    100000    4   tcp    111  portmapper
+    100000    3   tcp    111  portmapper
+    100000    2   tcp    111  portmapper
+    100000    4   udp    111  portmapper
+    100000    3   udp    111  portmapper
+    100000    2   udp    111  portmapper
+    100024    1   udp  41823  status
+    100024    1   tcp  35301  status
+    100004    2   udp   1011  ypserv
+    100004    1   udp   1011  ypserv
+    100004    2   tcp   1011  ypserv
+    100004    1   tcp   1011  ypserv
+    100009    1   udp   1012  yppasswdd
+5. 创建用户
+# useradd cadmin
+# passwd cadmin
+# useradd rensg
+# passwd rensg
+6. 更新数据库
+# /usr/lib64/yp/ypinit -m
+
+At this point, we have to construct a list of the hosts which will run NIS
+servers.  aip-demo01 is in the list of NIS server hosts.  Please continue to add
+the names for the other hosts, one per line.  When you are done with the
+list, type a <control D>.
+        next host to add:  aip-demo01
+        next host to add:
+The current list of NIS servers looks like this:
+
+aip-demo01
+
+Is this correct?  [y/n: y]  y
+We need a few minutes to build the databases...
+Building /var/yp/skyform.lab/ypservers...
+Running /var/yp/Makefile...
+gmake[1]: Entering directory `/var/yp/skyform.lab'
+Updating passwd.byname...
+Updating passwd.byuid...
+Updating group.byname...
+Updating group.bygid...
+Updating hosts.byname...
+Updating hosts.byaddr...
+Updating rpc.byname...
+Updating rpc.bynumber...
+Updating services.byname...
+Updating services.byservicename...
+Updating netid.byname...
+Updating protocols.bynumber...
+Updating protocols.byname...
+Updating mail.aliases...
+gmake[1]: Leaving directory `/var/yp/skyform.lab'
+
+aip-demo01 has been set up as a NIS master server.
+
+Now you can run ypinit -s aip-demo01 on all slave server.
+
+
+
+NIS客户端配置
+1. 安装NIS客户端服务
+ # yum -y install ypbind yp-tools
+2. 配置domain name
+2.1 运行以下命令并将改命令加入到/etc/rc.local启动文件中
+# nisdomainname "skyform.lab"
+2.2 并在网络配置文件/etc/sysconfig/network中添加如下内容：
+NISDOMAIN=skyform.lab
+3. 修改客户端配置文件/etc/yp.conf
+domain skyform.lab server 10.15.15.241
+4. 确认系统认证使用NIS
+# grep USENIS /etc/sysconfig/authconfig
+USENIS=yes
+# grep 'password' /etc/pam.d/system-auth | grep 'sufficient'
+password    sufficient    pam_unix.so sha512 shadow nis nullok try_first_pass use_authtok
+5. 修改认证配置/etc/nsswitch.conf
+passwd:     files nis
+shadow:     files nis
+group:      files nis
+hosts:      files nis
+6. 启动NIS客户端服务
+# service rpcbind start
+# service ypbind start
+# chkconfig rpcbind on
+# chkconfig ypbind on
+7. 测试NIS客户是否工作
+# yptest
+Test 1: domainname
+Configured domainname is "skyform.lab"
+
+Test 2: ypbind
+Used NIS server: aip-demo01.skyform.lab
+
+Test 3: yp_match
+WARNING: No such key in map (Map passwd.byname, key nobody)
+
+Test 4: yp_first
+cadmin cadmin:$6$P3nFGOAG$WvOzyqfa4x/wZpH1gLKAsG/01d4/FmLx0JavJAMPr1DTO0yo9VZOY9ncb6MTAaEbqzKouj/NcXNrQjkdMfGtQ.:1000:1000::/home/cadmin:/bin/bash
+
+Test 5: yp_next
+rensg rensg:$6$zL1cm/4J$sTSqA5pbTEB1gj3ce4zEn/omYmseWPQDqmoJ2D6xTe2wd2g/TnecfOnl0AdkvgOBUesApPgR11AJLzllpFP0E/:1002:1002::/home/rensg:/bin/bash
+test test:!!:1001:1001::/home/test:/bin/bash
+
+Test 6: yp_master
+aip-demo01
+
+Test 7: yp_order
+1559836974
+
+Test 8: yp_maplist
+mail.aliases
+protocols.byname
+protocols.bynumber
+netid.byname
+services.byservicename
+services.byname
+rpc.bynumber
+rpc.byname
+hosts.byaddr
+hosts.byname
+group.bygid
+group.byname
+passwd.byuid
+passwd.byname
+ypservers
+
+Test 9: yp_all
+cadmin cadmin:$6$P3nFGOAG$WvOzyqfa4x/wZpH1gLKAsG/01d4/FmLx0JavJAMPr1DTO0yo9VZOY9ncb6MTAaEbqzKouj/NcXNrQjkdMfGtQ.:1000:1000::/home/cadmin:/bin/bash
+rensg rensg:$6$zL1cm/4J$sTSqA5pbTEB1gj3ce4zEn/omYmseWPQDqmoJ2D6xTe2wd2g/TnecfOnl0AdkvgOBUesApPgR11AJLzllpFP0E/:1002:1002::/home/rensg:/bin/bash
+test test:!!:1001:1001::/home/test:/bin/bash
+
+ 
