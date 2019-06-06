@@ -1,0 +1,9 @@
+pd.options.display.float_format = '{:.0f}'.format
+pd.set_option('display.max_columns',100)
+df=pd.read_csv('xxx.csv',encoding='gbk')
+
+df=pd.read_csv('xxx.csv',encoding='gbk')
+
+# 没有表头
+df=pd.read_csv('xxx.csv', header=None, encoding='gbk')
+http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
