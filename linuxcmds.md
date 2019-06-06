@@ -1,9 +1,9 @@
 # user operations
-# create a user with specified home directory
-# useradd <user> -d <home direcotry>
-# create a user with a default home directory under /home
-# useradd -m <user>
-# passwd <user>
+\# create a user with specified home directory
+\# useradd <user> -d <home direcotry>
+\# create a user with a default home directory under /home
+\# useradd -m <user>
+\# passwd <user>
 
 # change home directory
 # usermod -md <new home directory> <user>
