@@ -3,6 +3,7 @@
 
 \# useradd $user -d $home_direcotry
 
+
 \# create a user with a default home directory under /home
 
 \# useradd -m $user
