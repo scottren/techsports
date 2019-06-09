@@ -2,7 +2,7 @@
 
 jupyter notebook --generate-config
 
-* 配置项
+- 配置项
 
 .jupyter/jupyter_notebook_config.py
 
