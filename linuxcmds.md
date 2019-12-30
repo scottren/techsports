@@ -37,7 +37,7 @@
 
 \# vgcrete nfs /dev/sdx
 
-\# lvcreate -l 100%FREE apps nfs
+\# lvcreate -l 100%FREE -n apps nfs
 
 \# vgextend /dev/sdy
 
