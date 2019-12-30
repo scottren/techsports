@@ -32,3 +32,17 @@
 
 \# chown \<user\>:\<group\> \<directory\>
 
+## FS Operations
+\# pvcreate /dev/sdx
+
+\# vgcrete nfs /dev/sdx
+
+\# lvcreate -l 100%FREE apps nfs
+
+\# vgextend /dev/sdy
+
+\# lvextend -l +100%FREE /dev/nfs/apps
+
+\# resize2fs /dev/nfs/apps
+
+\# xfs_growfs /dev/nfs/apps
