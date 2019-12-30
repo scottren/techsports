@@ -46,3 +46,7 @@
 \# resize2fs /dev/nfs/apps
 
 \# xfs_growfs /dev/nfs/apps
+
+\# 查看进程打开的文件
+
+\# lsof /nfs
