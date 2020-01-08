@@ -41,7 +41,7 @@
 
 \# lvcreate -l 100%FREE -n apps nfs
 
-\# vgextend /dev/sdy
+\# vgextend nfs /dev/sdy
 
 \# lvextend -l +100%FREE /dev/nfs/apps
 
