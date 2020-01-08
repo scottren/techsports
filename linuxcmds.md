@@ -33,6 +33,8 @@
 \# chown \<user\>:\<group\> \<directory\>
 
 ## FS Operations
+\# echo "- - -"  > /sys/class/scsi_host/host0/scan # 热添加磁盘扫描
+
 \# pvcreate /dev/sdx
 
 \# vgcrete nfs /dev/sdx
