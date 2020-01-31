@@ -10,7 +10,7 @@ registry.sefon.com dockerd-current[6374]: Error starting daemon: SELinux is not 
 
 编辑 Docker 配置文件： /etc/sysconfig/docker
 
-OPTIONS='--selinux-enabled*=false* --log-driver=journald --signature-verification=false --registry-mirror=https://fzhifedh.mirror.aliyuncs.com --insecure-registry=registry.sese.com' 
+OPTIONS='--selinux-enabled**=false** --log-driver=journald --signature-verification=false --registry-mirror=https://fzhifedh.mirror.aliyuncs.com --insecure-registry=registry.sese.com' 
 
 
 
