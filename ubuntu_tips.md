@@ -29,3 +29,7 @@ sudo systemctl enable rc.local.service
 \# 4. 启动 rc.local.service
 
 sudo systemctl start rc.local.service
+
+安装指定版本
+
+sudo apt-get install package[=10.1]
